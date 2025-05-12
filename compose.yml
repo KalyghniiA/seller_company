@@ -1,0 +1,9 @@
+services:
+  postgres:
+    image: postgres:latest
+    environment:
+      - POSTGRES_DB=sellers_company
+      - POSTGRES_USER=sellers_admin
+      - POSTGRES_PASSWORD=12345
+    ports:
+      - '6432:5432'
