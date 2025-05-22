@@ -7,6 +7,7 @@ public class Constant {
     public final static String RESPONSE_ELEMENT = "response-element";
     public final static String REQUEST_PARAM_KEY_ID = "id";
     public final static String REQUEST_PARAM_VALUE_ID = "id-value";
+    public final static String ENTITY_MANAGER_FACTORY = "entity-manager-factory";
 
 
     private Constant(){}

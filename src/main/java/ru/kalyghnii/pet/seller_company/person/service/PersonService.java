@@ -5,7 +5,7 @@ import ru.kalyghnii.pet.seller_company.person.model.Person;
 
 import java.util.List;
 
-public interface PersonServce {
+public interface PersonService {
     Person getById(long id);
 
     void save(Person person);

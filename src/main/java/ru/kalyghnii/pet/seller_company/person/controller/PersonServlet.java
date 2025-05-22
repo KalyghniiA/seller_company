@@ -5,18 +5,18 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import ru.kalyghnii.pet.seller_company.exception.EmptyResultException;
 import ru.kalyghnii.pet.seller_company.person.model.Person;
-import ru.kalyghnii.pet.seller_company.person.service.PersonServce;
+import ru.kalyghnii.pet.seller_company.person.service.PersonService;
 import ru.kalyghnii.pet.seller_company.util.Constant;
 
 import java.util.Arrays;
 import java.util.List;
 
 public class PersonServlet extends HttpServlet {
-    private PersonServce service;
+    private PersonService service;
 
     @Override
     public void init() {
-        service = (PersonServce) getServletContext().getAttribute(Constant.PERSON_SERVICE);
+        service = (PersonService) getServletContext().getAttribute(Constant.PERSON_SERVICE);
     }
 
     @Override
