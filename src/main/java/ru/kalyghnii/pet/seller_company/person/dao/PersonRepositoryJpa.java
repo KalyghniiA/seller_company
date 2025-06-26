@@ -6,6 +6,7 @@ import jakarta.persistence.EntityTransaction;
 import ru.kalyghnii.pet.seller_company.person.model.Person;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class PersonRepositoryJpa implements PersonRepository {
     EntityManagerFactory emf;
@@ -29,10 +30,13 @@ public class PersonRepositoryJpa implements PersonRepository {
 
     @Override
     public List<Person> findAll() {
-//        EntityTransaction et = entityManager.getTransaction();
-//        List<Person> persons = entityManager.createNativeQuery("select * from persons", Person.class)
-//                .getResultList();
-        return List.of();
+        try (EntityManager em = emf.createEntityManager()) {
+            EntityTransaction et = em.getTransaction();
+            et.begin();
+            List<Person> persons =  em.createNativeQuery("select * from persons", Person.class).getResultList();
+            et.commit();
+            return persons;
+        }
     }
 
     @Override
@@ -63,21 +67,46 @@ public class PersonRepositoryJpa implements PersonRepository {
 
     @Override
     public void deleteById(long id) {
-
+        try (EntityManager em = emf.createEntityManager()) {
+            EntityTransaction et = em.getTransaction();
+            et.begin();
+            Person person = em.find(Person.class, id);
+            em.remove(person);
+            et.commit();
+        }
     }
 
     @Override
     public List<Person> getByRole(String role) {
-        return List.of();
+        try (EntityManager em = emf.createEntityManager()) {
+            EntityTransaction et = em.getTransaction();
+            et.begin();
+            List<Person> persons = em
+                    .createNativeQuery("select * from persons where role_id= ?", Person.class)
+                    .setParameter(1, role)
+                    .getResultList();
+            et.commit();
+            return persons;
+        }
     }
 
     @Override
     public List<Person> getByOrganization(Long organizationId) {
-        return List.of();
+        return List.of(); //other
     }
 
     @Override
     public List<Person> getByIds(List<Long> ids) {
-        return List.of();
+        String idsString = ids.stream().map(Object::toString).collect(Collectors.joining(","));
+        try (EntityManager em = emf.createEntityManager()) {
+            EntityTransaction et = em.getTransaction();
+            et.begin();
+            List<Person> persons = em
+                    .createNativeQuery("select * from persons where IN(?)")
+                    .setParameter(1, idsString)
+                    .getResultList();
+            et.commit();
+            return persons;
+        }
     }
 }

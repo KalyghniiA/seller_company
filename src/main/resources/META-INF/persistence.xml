@@ -8,8 +8,8 @@
         
         <properties>
             <property name="jakarta.persistence.jdbc.driver" value="org.postgresql.Driver"/>
-            <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://localhost:6432/seller_company"/>
-            <property name="jakarta.persistence.jdbc.user" value="seller_admin"/>
+            <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://localhost:6432/sellers_company"/>
+            <property name="jakarta.persistence.jdbc.user" value="sellers_admin"/>
             <property name="jakarta.persistence.jdbc.password" value="12345"/>
             
             <property name="hibernate.connection.provider_class" value="com.zaxxer.hikari.hibernate.HikariConnectionProvider"/>

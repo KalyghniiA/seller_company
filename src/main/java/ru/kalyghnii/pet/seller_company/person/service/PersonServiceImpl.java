@@ -1,5 +1,6 @@
 package ru.kalyghnii.pet.seller_company.person.service;
 
+import ru.kalyghnii.pet.seller_company.exception.EmptyResultException;
 import ru.kalyghnii.pet.seller_company.person.dao.PersonRepository;
 import ru.kalyghnii.pet.seller_company.person.model.Person;
 
@@ -24,11 +25,17 @@ public class PersonServiceImpl implements PersonService {
 
     @Override
     public void update(Person person) {
+        if (personRepository.findById(person.getPersonId()) == null) {
+            throw new EmptyResultException(String.format("Пользователя с id %s нет в базе", person.getPersonId()));
+        }
         personRepository.save(person);
     }
 
     @Override
     public void delete(long id) {
+        if (personRepository.findById(id) == null) {
+            throw new EmptyResultException(String.format("Пользователя с id %s нет в базе", id));
+        }
         personRepository.deleteById(id);
     }
 

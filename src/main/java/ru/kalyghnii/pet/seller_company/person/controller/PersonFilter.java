@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import ru.kalyghnii.pet.seller_company.exception.EmptyBodyException;
 import ru.kalyghnii.pet.seller_company.exception.EmptyParameterException;
 import ru.kalyghnii.pet.seller_company.exception.EmptyResultException;
+import ru.kalyghnii.pet.seller_company.exception.ValidationBodyException;
 import ru.kalyghnii.pet.seller_company.person.model.Person;
 import ru.kalyghnii.pet.seller_company.util.Constant;
 import ru.kalyghnii.pet.seller_company.util.StatusCode;
@@ -55,7 +56,7 @@ public class PersonFilter extends HttpFilter {
                     filterChain.doFilter(servletRequest, servletResponse);
                     processingResponse(servletResponse, StatusCode.OK.getTitle(), "");
                 } catch (EmptyParameterException | EmptyResultException e) {
-                    processingResponse(servletResponse, StatusCode.BAD_REQUEST.getTitle(), e.getMessage());
+                    processingResponse(servletResponse, StatusCode.NOT_ACCEPTABLE.getTitle(), e.getMessage());
                     return;
                 }
                 break;
@@ -66,7 +67,9 @@ public class PersonFilter extends HttpFilter {
                     processingResponse(servletResponse, StatusCode.OK.getTitle(), "");
                 } catch (EmptyBodyException | EmptyResultException e) {
                     String json = String.format("{\"error\": \"%s\"}", e.getMessage());
-                    processingResponse(servletResponse, StatusCode.BAD_REQUEST.getTitle(), json);
+                    processingResponse(servletResponse, StatusCode.NOT_ACCEPTABLE.getTitle(), json);
+                } catch (ValidationBodyException e) {
+                    processingResponse(servletResponse, StatusCode.BAD_REQUEST.getTitle(), e.getMessage());
                 }
         }
     }
@@ -92,9 +95,8 @@ public class PersonFilter extends HttpFilter {
 
     private void processingGet(HttpServletRequest servletRequest) {
         Map<String, String[]> params = servletRequest.getParameterMap();
-        if (!params.containsKey(Constant.REQUEST_PARAM_KEY_ID)
-                || params.get(Constant.REQUEST_PARAM_KEY_ID).length < 1) {
-            throw new EmptyParameterException("Параметр id отсутствует, либо не передан ни один id");
+        if (!params.containsKey(Constant.REQUEST_PARAM_KEY_ID)) {
+            throw new EmptyParameterException("Параметр id отсутствует");
         }
 
         getServletContext().setAttribute(Constant.REQUEST_PARAM_VALUE_ID, params.get(Constant.REQUEST_PARAM_KEY_ID));
@@ -122,6 +124,9 @@ public class PersonFilter extends HttpFilter {
 
             if (json != null && !json.trim().isEmpty()) {
                 Person person = mapper.readValue(json, Person.class);
+                if (person.getPersonId() == null) {
+                    throw new ValidationBodyException("Поле id не может быть пустым");
+                }
                 getServletContext().setAttribute(Constant.PERSON_ELEMENT, person);
             } else {
                 throw new EmptyBodyException("Тело запроса отсутствует");

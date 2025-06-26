@@ -21,19 +21,13 @@ public class PersonServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
-        String[] idArr = (String[]) getServletContext().getAttribute(Constant.REQUEST_PARAM_VALUE_ID);
-
-        if (idArr.length == 1) {
-            Person person = service.getById(Long.parseLong(idArr[0]));
-            if (person == null) {
-                throw new EmptyResultException(String.format("Пользователя с id %s нет в базе", idArr[0]));
-            }
-            getServletContext().setAttribute(Constant.RESPONSE_ELEMENT, person);
-        } else {
-            List<Long> personsId = Arrays.stream(idArr).map(Long::parseLong).toList();
-            List<Person> persons = service.getByIds(personsId);
-            getServletContext().setAttribute(Constant.RESPONSE_ELEMENT, persons);
+        String id = ((String[]) getServletContext().getAttribute(Constant.REQUEST_PARAM_VALUE_ID))[0];
+        Person person = service.getById(Long.parseLong(id));
+        if (person == null) {
+            throw new EmptyResultException(String.format("Пользователя с id %s нет в базе", id));
         }
+        getServletContext().setAttribute(Constant.RESPONSE_ELEMENT, person);
+
     }
 
     @Override
@@ -45,18 +39,12 @@ public class PersonServlet extends HttpServlet {
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) {
         Person newPerson = (Person) getServletContext().getAttribute(Constant.PERSON_ELEMENT);
-        if (newPerson.getPersonId() == null || service.getById(newPerson.getPersonId()) == null) {
-            throw new EmptyResultException(String.format("Пользователя с id %s нет в базе", newPerson.getPersonId()));
-        }
         service.update(newPerson);
     }
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) {
         Long id = (Long) getServletContext().getAttribute(Constant.REQUEST_PARAM_KEY_ID);
-        if (service.getById(id) == null) {
-            throw new EmptyResultException(String.format("Пользователя с id %s нет в базе", id));
-        }
         service.delete(id);
     }
 }
