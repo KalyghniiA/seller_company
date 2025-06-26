@@ -8,6 +8,8 @@ public class Constant {
     public final static String REQUEST_PARAM_KEY_ID = "id";
     public final static String REQUEST_PARAM_VALUE_ID = "id-value";
     public final static String ENTITY_MANAGER_FACTORY = "entity-manager-factory";
+    public final static String ITEM_SERVICE = "item-service";
+    public final static String ITEM_ELEMENT = "item-element";
 
 
     private Constant(){}
